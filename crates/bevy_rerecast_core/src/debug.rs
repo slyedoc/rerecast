@@ -11,7 +11,6 @@ use bevy_mesh::{Indices, Mesh, Mesh3d, PrimitiveTopology};
 use bevy_material::AlphaMode;
 use bevy_pbr::prelude::*;
 use bevy_reflect::prelude::*;
-use bevy_render::prelude::*;
 use glam::vec3;
 use rerecast::PolygonNavmesh;
 
