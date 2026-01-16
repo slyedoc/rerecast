@@ -26,6 +26,7 @@ pbr_anisotropy_texture = ["bevy_pbr/pbr_anisotropy_texture"]
 [dependencies]
 bevy_render = { workspace = true }
 bevy_pbr = { workspace = true }
+bevy_material = { workspace = true }
 bevy_asset = { workspace = true }
 bevy_app = { workspace = true }
 bevy_transform = { workspace = true, features = ["serialize"] }

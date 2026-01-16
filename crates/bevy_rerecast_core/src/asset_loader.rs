@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 /// The [`AssetLoader`] for [`Navmesh`] assets. Loads files ending in `.nav`.
-#[derive(Debug, Default)]
+#[derive(Debug, Default, bevy_reflect::TypePath)]
 #[non_exhaustive]
 pub struct NavmeshLoader;
 
