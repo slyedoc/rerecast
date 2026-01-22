@@ -50,17 +50,24 @@ fn setup(
     let mesh = heightfield_to_mesh(&heights, scale);
 
     // Spawn the heightfield terrain
-    commands.spawn((
-        Name::new("Terrain"),
-        Mesh3d(meshes.add(mesh)),
-        MeshMaterial3d(materials.add(StandardMaterial {
-            base_color: Color::from(tailwind::GREEN_600),
-            perceptual_roughness: 0.9,
-            ..default()
-        })),
-        RigidBody::Static,
-        Collider::heightfield(heights, scale.into()),
+commands.spawn((
+        Name::new("Terrain Child test"),
+        Visibility::default(),
+        Transform::default(),
+        children![(
+                Name::new("Child"),
+                Mesh3d(meshes.add(mesh)),
+                MeshMaterial3d(materials.add(StandardMaterial {
+                    base_color: Color::from(tailwind::GREEN_600),
+                    perceptual_roughness: 0.9,
+                    ..default()
+                })),
+                RigidBody::Static,
+                Collider::heightfield(heights, scale.into()),
+        )]
     ));
+
+    
 
     // Add some obstacles on the terrain
     let obstacle_material = materials.add(Color::from(tailwind::GRAY_400));

@@ -261,8 +261,11 @@ impl ContourSet {
                 indices[j] = j;
             }
 
-            // Jan: we treat an invalid triangulation as an error instead of a warning.
-            let ntris = triangulate(cont.vertices.len(), &cont.vertices, &mut indices, &mut tris)?;
+            // Skip contours that fail triangulation (degenerate/self-intersecting geometry)
+            let ntris = match triangulate(cont.vertices.len(), &cont.vertices, &mut indices, &mut tris) {
+                Ok(n) => n,
+                Err(_) => continue,
+            };
             // Add and merge vertices.
             for j in 0..cont.vertices.len() {
                 let (v, region) = &cont.vertices[j];
