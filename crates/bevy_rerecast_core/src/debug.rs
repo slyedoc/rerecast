@@ -186,7 +186,7 @@ fn update_dirty_polygon_gizmos(
 ) {
     for (entity, mut gizmo_handle, mut layers, navmesh_handle, mut visibility) in gizmos.iter_mut()
     {
-        let Some(gizmo) = gizmo_assets.get_mut(&gizmo_handle.handle) else {
+        let Some(mut gizmo) = gizmo_assets.get_mut(&gizmo_handle.handle) else {
             continue;
         };
         let config = config.polygon_navmesh.clone();
@@ -288,7 +288,7 @@ fn update_dirty_detail_gizmos(
 ) {
     for (entity, mut gizmo_handle, mut layers, navmesh_handle, mut visibility) in gizmos.iter_mut()
     {
-        let Some(gizmo) = gizmo_assets.get_mut(&gizmo_handle.handle) else {
+        let Some(mut gizmo) = gizmo_assets.get_mut(&gizmo_handle.handle) else {
             continue;
         };
 
