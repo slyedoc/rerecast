@@ -1576,7 +1576,7 @@ dependencies = [
  "bevy_utils",
  "bincode",
  "critical-section",
- "glam 0.31.1",
+ "glam 0.32.0",
  "rerecast",
  "serde",
  "thiserror 2.0.18",
@@ -3310,6 +3310,16 @@ dependencies = [
  "encase",
  "libm",
  "rand",
+ "serde_core",
+]
+
+[[package]]
+name = "glam"
+version = "0.32.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "34627c5158214743a374170fed714833fdf4e4b0cbcc1ea98417866a4c5d4441"
+dependencies = [
+ "libm",
  "serde_core",
 ]
 
@@ -5277,7 +5287,7 @@ dependencies = [
  "anyhow",
  "bevy_reflect",
  "bitflags 2.11.0",
- "glam 0.31.1",
+ "glam 0.32.0",
  "libm",
  "serde",
  "serde_json",
@@ -5946,7 +5956,7 @@ name = "test_utils"
 version = "0.1.0"
 dependencies = [
  "approxim",
- "glam 0.31.1",
+ "glam 0.32.0",
  "rerecast",
  "serde",
  "serde_json",
