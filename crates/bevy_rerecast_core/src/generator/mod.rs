@@ -191,9 +191,10 @@ async fn generate_navmesh(mut trimesh: TriMesh, settings: NavmeshSettings) -> Re
     let mut config_builder = settings.clone().into_rerecast_config();
     let config = {
         if config_builder.aabb == Aabb3d::default() {
-            config_builder.aabb = trimesh
-                .compute_aabb()
-                .context("Failed to compute AABB: trimesh is empty")?;
+            config_builder.aabb = anyhow::Context::context(
+                trimesh.compute_aabb(),
+                "Failed to compute AABB: trimesh is empty",
+            )?;
         }
         let min = &mut config_builder.aabb.min;
         let max = &mut config_builder.aabb.max;
