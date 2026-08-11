@@ -13,7 +13,9 @@ categories = ["game-development"]
 readme = "readme.md"
 
 [workspace.dependencies]
-avian3d = { git = "https://github.com/slyedoc/avian", branch = "bevy-main", default-features = false, features = ["f32", "3d", "parry-f32", "collider-from-mesh", "debug-plugin"] }
+# No debug-plugin (bevy_render) — render-free so avian_rerecast works under
+# aurora; same upstream URL as zero so its [patch] unifies the avian3d build.
+avian3d = { git = "https://github.com/avianphysics/avian", branch = "main", default-features = false, features = ["f32", "3d", "parry-f32", "collider-from-mesh"] }
 serde = { version = "1.0.219", default-features = false, features = ["alloc"] }
 serde_json = { version = "1.0.140", default-features = false, features = [
     "alloc",
