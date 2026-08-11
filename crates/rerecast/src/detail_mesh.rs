@@ -959,7 +959,7 @@ impl Default for Edge {
 }
 
 fn dist_to_tri_mesh(p: Vec3A, verts: &[Vec3A], tris: &[[u8; 3]]) -> Option<f32> {
-    let mut dmin = f32::MAX;
+    let mut dmin = <f32>::MAX;
     for tri in tris {
         let va = verts[tri[0] as usize];
         let vb = verts[tri[1] as usize];
@@ -971,7 +971,7 @@ fn dist_to_tri_mesh(p: Vec3A, verts: &[Vec3A], tris: &[[u8; 3]]) -> Option<f32> 
             dmin = d;
         }
     }
-    if dmin == f32::MAX { None } else { Some(dmin) }
+    if dmin == <f32>::MAX { None } else { Some(dmin) }
 }
 
 /// Distance from point p to triangle defined by vertices a, b, and c.
@@ -1011,7 +1011,7 @@ fn get_jitter_y(i: usize) -> f32 {
 }
 
 fn dist_to_poly(nvert: usize, verts: &[Vec3A], p: Vec3A) -> f32 {
-    let mut dmin = f32::MAX;
+    let mut dmin = <f32>::MAX;
     let mut c = false;
     let mut j = nvert - 1;
     for i in 0..nvert {
@@ -1085,7 +1085,7 @@ fn triangulate_hull(
 
     // Start from an ear with shortest perimeter.
     // This tends to favor well formed triangles as starting point.
-    let mut dmin = f32::MAX;
+    let mut dmin = <f32>::MAX;
     for i in 0..nhull {
         if hull[i] >= nin {
             // Ears are triangles with original vertices as middle vertex while others are actually line segments on edges
@@ -1156,7 +1156,7 @@ fn get_height(f: Vec3A, ics: f32, ch: f32, radius: u32, hp: &HeightPatch) -> u16
         let mut next_ring_iter_start = 8;
         let mut next_ring_iters = 16;
 
-        let mut dmin = f32::MAX;
+        let mut dmin = <f32>::MAX;
         for i in 0..max_iter {
             let nx = ix + x;
             let nz = iz + z;
@@ -1209,7 +1209,7 @@ fn get_height(f: Vec3A, ics: f32, ch: f32, radius: u32, hp: &HeightPatch) -> u16
 
 /// Calculate minimum extend of the polygon.
 fn poly_min_extent_squared(verts: &[Vec3A], nverts: usize) -> f32 {
-    let mut min_dist = f32::MAX;
+    let mut min_dist = <f32>::MAX;
     for i in 0..nverts {
         let ni = next(i, nverts);
         let p1 = verts[i];
