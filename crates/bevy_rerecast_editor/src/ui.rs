@@ -428,7 +428,7 @@ struct LoadNavmeshButton;
 struct StatusText;
 
 fn update_primary_buttons_when_obstacle_added(
-    _obstacle_added: On<Add, ObstacleGizmo>,
+    _obstacle_added: On<Add<ObstacleGizmo>>,
     load_button: Single<Entity, With<LoadSceneButton>>,
     build_button: Single<Entity, With<BuildNavmeshButton>>,
     save_button: Single<Entity, With<SaveNavmeshButton>>,
@@ -449,7 +449,7 @@ fn update_primary_buttons_when_obstacle_added(
 }
 
 fn update_primary_buttons_when_obstacle_removed(
-    _obstacle_removed: On<Remove, ObstacleGizmo>,
+    _obstacle_removed: On<Remove<ObstacleGizmo>>,
     load_button: Single<Entity, With<LoadSceneButton>>,
     build_button: Single<Entity, With<BuildNavmeshButton>>,
     save_button: Single<Entity, With<SaveNavmeshButton>>,
@@ -539,10 +539,10 @@ fn set_gizmo(gizmo: AvailableGizmos) -> impl ObserverSystem<ValueChange<bool>, (
     )
 }
 
-fn set_ui_size(add: On<Add, InheritableFont>, mut font: Query<&mut InheritableFont>) {
+fn set_ui_size(add: On<Add<InheritableFont>>, mut font: Query<&mut InheritableFont>) {
     font.get_mut(add.entity).unwrap().font_size = FontSize::Px(FONT_SIZE);
 }
-fn set_font_size(add: On<Add, TextFont>, mut font: Query<&mut TextFont>) {
+fn set_font_size(add: On<Add<TextFont>>, mut font: Query<&mut TextFont>) {
     font.get_mut(add.entity).unwrap().font_size = FontSize::Px(FONT_SIZE);
 }
 
