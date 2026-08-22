@@ -1,8 +1,8 @@
 use bevy_asset::{Assets, Handle};
 use bevy_color::prelude::*;
 use bevy_image::{Image, SerializedImage};
-use bevy_math::Affine2;
 use bevy_material::{AlphaMode, OpaqueRendererMethod};
+use bevy_math::Affine2;
 use bevy_mesh::UvChannel;
 use bevy_pbr::prelude::*;
 use bevy_platform::collections::HashMap;

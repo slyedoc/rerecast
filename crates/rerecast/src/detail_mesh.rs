@@ -291,8 +291,7 @@ impl DetailNavmesh {
                 while dmesh.vertices.len() + nverts > vcap {
                     vcap += 256;
                 }
-                // Use saturating_sub to handle case where Vec allocated more than vcap
-                dmesh.vertices.reserve(vcap.saturating_sub(dmesh.vertices.capacity()));
+                dmesh.vertices.reserve(vcap - dmesh.vertices.len());
             }
             for vert in &verts[..nverts] {
                 dmesh.vertices.push(Vec3::from(*vert));
@@ -303,8 +302,7 @@ impl DetailNavmesh {
                 while dmesh.triangles.len() + tris.len() > tcap {
                     tcap += 256;
                 }
-                // Use saturating_sub to handle case where Vec allocated more than tcap
-                dmesh.triangles.reserve(tcap.saturating_sub(dmesh.triangles.capacity()));
+                dmesh.triangles.reserve(tcap - dmesh.triangles.len());
             }
             for tri in &tris {
                 dmesh.triangles.push([tri[0], tri[1], tri[2]]);

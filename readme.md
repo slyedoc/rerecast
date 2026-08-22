@@ -106,7 +106,9 @@ Take a look at the [`examples`](https://github.com/janhohenheim/rerecast/tree/ma
 
 Tweaking navmesh settings by hand and restarting the game to see the changes is a very inefficient way to iterate on your game.
 Instead, navmeshes are often authored in advanced. To do this, the Bevy integration comes with an editor to help you out.
-To use it, you must enable Bevy's BRP functionality, which is a way for Bevy processes to communicate over HTTP. To do this, enable Bevy's `remote` feature and add the [`RemotePlugin`] and [`RemoteHttpPlugin`] to your app:
+To use it, you must enable Bevy's BRP functionality, which is a way for Bevy processes to communicate over HTTP. To do this, enable Bevy's `bevy_remote` feature and add the [`RemotePlugin`] and [`RemoteHttpPlugin`] to your app:
+
+Note that as of `bevy` 0.18, enabling the `bevy_remote` feature will automatically add the [`RemotePlugin`] and [`RemoteHttpPlugin`] plugins.
 
 ```rust,no_run
 use bevy::prelude::*;
@@ -127,7 +129,7 @@ App::new()
 Next, download the editor by entering the following command in your terminal:
 
 ```bash
-cargo install bevy_rerecast_editor
+cargo install bevy_rerecast_editor --locked
 ```
 
 And then run it:
@@ -138,11 +140,13 @@ bevy_rerecast_editor
 
 Now, when you start your game, you can load the current level into the editor, tweak the navmesh, and save it into a `.nav` file that you can load into your game.
 
+If you've disabled the default features of `bevy_rerecast`, make sure to enable the `editor_integration` feature. Otherwise, the editor won't work.
+
 ## Third-Party Integration
 
 ### Backends
 
-The recommended way to use the navmesh generator is with a physics engine backend. That way, the generated navmesh will match the physics engine's collision geometry. Currently, the only supported physics engine is [Avian](https://github.com/Jondolf/avian). To use its backend, add the `avian_rerecast` crate to your project:
+The recommended way to use the navmesh generator is with a physics engine backend. That way, the generated navmesh will match the physics engine's collision geometry. Currently, the only supported physics engine is [Avian](https://github.com/avianphysics/avian). To use its backend, add the `avian_rerecast` crate to your project:
 
 ```bash
 cargo add avian_rerecast
@@ -210,6 +214,8 @@ Take a look at their repos for documentation on how to use them with rerecast.
 
 | bevy  | bevy_rerecast |
 |-------|---------------|
+| 0.19  | 0.5           |
+| 0.18  | 0.4           |
 | 0.17  | 0.3           |
 | 0.16  | 0.2           |
 

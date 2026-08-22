@@ -11,7 +11,7 @@ use bevy::{
     math::bounding::Aabb3d,
     mesh::MeshPlugin,
     prelude::*,
-    scene::{SceneInstanceReady, ScenePlugin},
+    world_serialization::{WorldInstanceReady, WorldSerializationPlugin},
 };
 use bevy_rerecast::{Mesh3dBackendPlugin, debug::NavmeshDebugPlugin, prelude::*};
 use bevy_rerecast_editor_integration::NavmeshEditorIntegrationPlugin;
@@ -20,8 +20,8 @@ use bevy_rerecast_editor_integration::NavmeshEditorIntegrationPlugin;
 fn gltf_generation() {
     let mut app = App::new_test();
     let gltf_handle = app.world().load_asset("models/dungeon.glb#Scene0");
-    app.world_mut().spawn(SceneRoot(gltf_handle)).observe(
-        |_: On<SceneInstanceReady>, mut commands: Commands| {
+    app.world_mut().spawn(WorldAssetRoot(gltf_handle)).observe(
+        |_: On<WorldInstanceReady>, mut commands: Commands| {
             commands.insert_resource(GltfLoaded);
         },
     );
@@ -33,7 +33,10 @@ fn gltf_generation() {
             panic!("Timeout waiting for glTF to load");
         }
     }
-    let navmesh_handle = app.generate_navmesh(NavmeshSettings::default());
+    let navmesh_handle = app.generate_navmesh(NavmeshSettings {
+        cell_size_fraction: 2.0,
+        ..NavmeshSettings::from_agent_3d(0.6, 2.0)
+    });
     let navmesh = app.get_navmesh(&navmesh_handle);
     let expected_navmesh = app.read_navmesh("test/dungeon/navmesh.nav");
 
@@ -63,6 +66,7 @@ fn primitive_2d_regeneration() {
     let cube_entity = app.world_mut().spawn(Mesh3d(cube_handle)).id();
 
     let settings = NavmeshSettings {
+        cell_size_fraction: 2.0,
         aabb: Some(Aabb3d::new(Vec3::ZERO, Vec3::new(100.0, 100.0, 5.0))),
         ..NavmeshSettings::from_agent_2d(5.0, 2.0)
     };
@@ -214,7 +218,7 @@ fn headless_plugins(app: &mut App) {
             file_path: "../../assets".to_string(),
             ..default()
         },
-        ScenePlugin,
+        WorldSerializationPlugin,
         MeshPlugin,
         TransformPlugin,
         VisibilityPlugin,

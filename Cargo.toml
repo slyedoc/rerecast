@@ -13,27 +13,22 @@ categories = ["game-development"]
 readme = "readme.md"
 
 [workspace.dependencies]
-# No debug-plugin (bevy_render) — render-free so avian_rerecast works under
-# aurora; same upstream URL as zero so its [patch] unifies the avian3d build.
-avian3d = { git = "https://github.com/avianphysics/avian", branch = "main", default-features = false, features = ["f32", "3d", "parry-f32", "collider-from-mesh"] }
-serde = { version = "1.0.219", default-features = false, features = ["alloc"] }
-serde_json = { version = "1.0.140", default-features = false, features = [
-    "alloc",
-] }
-slotmap = { version = "1.0.7", default-features = false }
+avian3d = { version = "0.7", default-features = false }
+serde = { version = "1", default-features = false, features = ["alloc"] }
+serde_json = { version = "1", default-features = false, features = ["alloc"] }
+slotmap = { version = "1", default-features = false }
 ehttp = { version = "0.5", default-features = false }
 rfd = "0.15"
 
 # In sync with Bevy
-thiserror = { version = "2.0.12", default-features = false }
-wgpu-types = { version = "28", default-features = false }
-base64 = { version = "0.22.0", default-features = false, features = ["alloc"] }
+thiserror = { version = "2", default-features = false }
+wgpu-types = { version = "30", default-features = false }
+base64 = { version = "0.22", default-features = false, features = ["alloc"] }
 glam = { version = "0.32", default-features = false }
-libm = { version = "0.2.0", default-features = false }
-cosmic-text = { version = "0.14.2", default-features = false, features = ["std"] }
-tracing = { version = "0.1.41", default-features = false }
-critical-section = { version = "1.2.0", default-features = false }
-anyhow = { version = "1.0.98", default-features = false }
+libm = { version = "0.2", default-features = false }
+tracing = { version = "0.1", default-features = false }
+critical-section = { version = "1", default-features = false }
+anyhow = { version = "1", default-features = false }
 
 # Bevy
 ## Bevy itself is only used in tests and examples, so we can use the default features.
@@ -44,7 +39,6 @@ bevy_reflect = { git = "https://github.com/bevyengine/bevy", branch = "main", de
 ] }
 bevy_app = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_camera = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
-bevy_utils = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_light = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_remote = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_mesh = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
@@ -61,24 +55,29 @@ bevy_platform = { git = "https://github.com/bevyengine/bevy", branch = "main", d
 bevy_tasks = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_gizmos = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_material = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
+bevy_utils = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 
 # Workspace crates
-rerecast = { version = "0.2.0", path = "crates/rerecast", default-features = false }
-bevy_rerecast = { version = "0.3.0", path = "crates/bevy_rerecast", default-features = false }
-bevy_rerecast_core = { version = "0.3.0", path = "crates/bevy_rerecast_core", default-features = false }
-bevy_rerecast_editor_integration = { version = "0.3.0", path = "crates/bevy_rerecast_editor_integration", default-features = false }
-avian_rerecast = { version = "0.3.0", path = "crates/avian_rerecast", default-features = false }
-test_utils = { version = "0.1.0", path = "crates/test_utils", default-features = false }
+rerecast = { version = "0.4", path = "crates/rerecast", default-features = false }
+bevy_rerecast = { version = "0.5", path = "crates/bevy_rerecast", default-features = false }
+bevy_rerecast_core = { version = "0.5", path = "crates/bevy_rerecast_core", default-features = false }
+bevy_rerecast_editor_integration = { version = "0.5", path = "crates/bevy_rerecast_editor_integration", default-features = false }
+avian_rerecast = { version = "0.6", path = "crates/avian_rerecast", default-features = false }
+test_utils = { version = "0.1", path = "crates/test_utils", default-features = false }
 
 # Other stuffs
-bitflags = { version = "2.9.1", default-features = false }
-bevy_ui_text_input = { git = "https://github.com/slyedoc/bevy_ui_text_input", branch = "bevy-main" }
-flate2 = { version = "1.1.2", default-features = false, features = [
+bitflags = { version = "2", default-features = false }
+flate2 = { version = "1", default-features = false, features = [
     "rust_backend",
 ] }
 bincode = { version = "2", features = ["serde"], default-features = false }
-# bevy_trenchbroom = { features = ["avian"], git = "https://github.com/Noxmore/bevy_trenchbroom", branch = "bevy-main" }
+# bevy_trenchbroom is not ported to bevy main yet.
+# bevy_trenchbroom = { version = "0.14.0-rc.2", features = ["avian_f32"] }
 approxim = "0.6"
+
+[patch.crates-io]
+# Local port of avian to bevy main (fork farm).
+avian3d = { path = "/mnt/code/f/avian-main/crates/avian3d" }
 
 [workspace.lints.rust]
 missing_docs = "warn"
