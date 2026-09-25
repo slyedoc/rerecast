@@ -66,17 +66,22 @@ std = [
     "rerecast/std",
 ]
 critical-section = ["dep:critical-section", "bevy_platform/critical-section"]
-bevy_mesh = ["dep:bevy_mesh", "dep:bevy_render"]
+# `bevy_render` is NOT referenced anywhere in this crate's source -- converting a
+# `Mesh` to a `TriMesh` reads vertex attributes, which is `bevy_mesh`. Naming it here
+# made every consumer of the mesh backend depend on the whole wgpu stack for nothing.
+bevy_mesh = ["dep:bevy_mesh"]
 bevy_asset = ["dep:bevy_asset", "std"]
 # use libm for no_std support and cross-platform determinism
 libm = ["rerecast/libm", "bevy_math/libm", "glam/libm"]
 # Use std if available, but fall back to libm if not
 nostd-libm = ["rerecast/nostd-libm", "bevy_math/nostd-libm", "glam/nostd-libm"]
+# Draws the baked navmesh: gizmo lines plus a `StandardMaterial` overlay, so this one
+# genuinely needs bevy_pbr (and bevy_render behind it). A renderer-agnostic host wants
+# `default-features = false` with `bevy_mesh` alone.
 debug_plugin = [
     "bevy_asset",
     "dep:bevy_gizmos",
     "dep:bevy_color",
-    "dep:bevy_render",
     "dep:bevy_mesh",
     "dep:bevy_pbr",
     "dep:bevy_material",
