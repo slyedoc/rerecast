@@ -8,7 +8,7 @@ use bevy::{
     ecs::system::RunSystemOnce,
     gltf::GltfPlugin,
     log::LogPlugin,
-    math::bounding::Aabb3d,
+    shape::Aabb3d,
     mesh::MeshPlugin,
     prelude::*,
     world_serialization::{WorldInstanceReady, WorldSerializationPlugin},

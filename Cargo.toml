@@ -50,6 +50,7 @@ bevy_asset = { git = "https://github.com/bevyengine/bevy", branch = "main", defa
 bevy_image = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_pbr = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_math = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
+bevy_shape = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_color = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_derive = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }
 bevy_platform = { git = "https://github.com/bevyengine/bevy", branch = "main", default-features = false }

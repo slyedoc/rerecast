@@ -2,7 +2,7 @@ use alloc::vec::Vec;
 use bevy_app::prelude::*;
 use bevy_derive::{Deref, DerefMut};
 use bevy_ecs::{prelude::*, system::SystemId};
-use bevy_math::bounding::Aabb3d;
+use bevy_shape::Aabb3d;
 use bevy_platform::collections::HashSet;
 use bevy_reflect::prelude::*;
 use glam::Vec3;
