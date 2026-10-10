@@ -14,6 +14,7 @@ readme = { workspace = true }
 bevy_app = { workspace = true }
 bevy_ecs = { workspace = true }
 bevy_math = { workspace = true }
+bevy_shape = { workspace = true }
 bevy_reflect = { workspace = true }
 avian3d = { workspace = true, features = ["3d"] }
 bevy_rerecast_core = { workspace = true, features = ["std"] }

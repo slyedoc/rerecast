@@ -11,7 +11,7 @@ pub use crate::collider_to_trimesh::ColliderToTriMesh;
 
 /// Everything you need to get started with the Navmesh plugin.
 pub mod prelude {
-    pub use crate::{AvianBackendPlugin, ExcludeColliderFromNavmesh};
+    pub use crate::{AvianBackendPlugin, ExcludeColliderFromNavmesh, NavmeshHeightfieldStride};
 }
 
 /// The plugin of the crate. Will make all entities with [`Collider`] a collider belonging to a static [`RigidBody`] available for navmesh generation.
@@ -31,17 +31,31 @@ impl Plugin for AvianBackendPlugin {
 #[reflect(Component)]
 pub struct ExcludeColliderFromNavmesh;
 
+/// Feed a heightfield [`Collider`] to navmesh generation at every `n`-th row and column only.
+/// For terrain sampled finer than the navmesh needs: the backend's cost (on the main thread)
+/// and the rasterization both scale with the triangle count.
+#[derive(Debug, Clone, Copy, Component, Reflect)]
+#[reflect(Component)]
+pub struct NavmeshHeightfieldStride(pub u32);
+
 fn collider_backend(
     input: In<NavmeshSettings>,
     colliders: Query<
-        (Entity, &Collider, &Position, &Rotation, &ColliderOf),
+        (
+            Entity,
+            &Collider,
+            &Position,
+            &Rotation,
+            &ColliderOf,
+            Option<&NavmeshHeightfieldStride>,
+        ),
         Without<ExcludeColliderFromNavmesh>,
     >,
     bodies: Query<&RigidBody, Without<ExcludeColliderFromNavmesh>>,
 ) -> TriMesh {
     colliders
         .iter()
-        .filter_map(|(entity, collider, pos, rot, collider_of)| {
+        .filter_map(|(entity, collider, pos, rot, collider_of, stride)| {
             if input
                 .filter
                 .as_ref()
@@ -54,7 +68,8 @@ fn collider_backend(
                 return None;
             }
             let subdivisions = 10;
-            collider.to_trimesh(*pos, *rot, subdivisions)
+            let stride = stride.map_or(1, |s| s.0.max(1) as usize);
+            collider.to_trimesh_clipped(*pos, *rot, subdivisions, input.aabb.as_ref(), stride)
         })
         .fold(TriMesh::default(), |mut acc, t| {
             acc.extend(t);

@@ -118,7 +118,7 @@ fn drain_queue_into_tasks(world: &mut World) {
             return;
         };
         let thread_pool = AsyncComputeTaskPool::get();
-        let task = thread_pool.spawn(generate_navmesh(obstacles.clone(), input));
+        let task = thread_pool.spawn(generate_navmesh(obstacles, input));
         tasks_queue.insert(handle, task);
     }
 }
