@@ -4,7 +4,7 @@ use avian3d::{
     math::{ToF32Precision, ToRealPrecision},
     parry::{
         bounding_volume::Aabb,
-        math::Vector,
+        math::{Real, Vector},
         shape::{Compound, HeightField, Triangle, TypedShape},
     },
     prelude::*,
@@ -28,7 +28,7 @@ pub trait ColliderToTriMesh {
     /// The following shapes are not supported:
     /// - [`Segment`](avian3d::parry::shape::Segment)
     /// - [`Polyline`](avian3d::parry::shape::Polyline)
-    /// - [`HalfSpace`](avian3d::parry::shape::HalfSpace)
+    /// - [`HalfSpace`](avian3d::parry::shape::HalfSpace), unless clipped: then its plane across the clip
     /// - Custom shapes
     ///
     /// The following rounded shapes are supported, but only the inner shape without rounding is used:
@@ -141,6 +141,37 @@ fn strided_heightfield(
     triangles
 }
 
+/// The half-space's boundary plane over the clip box (its local frame): one quad facing out.
+fn half_space_quad(normal: Vector, clip: &Aabb) -> (Vec<Vector>, Vec<[u32; 3]>) {
+    let (u, v) = normal.any_orthonormal_pair();
+    let (u, v) = if u.cross(v).dot(normal) < 0.0 {
+        (v, u)
+    } else {
+        (u, v)
+    };
+    let (mut lo, mut hi) = ((Real::MAX, Real::MAX), (Real::MIN, Real::MIN));
+    for i in 0..8 {
+        let corner = Vector::new(
+            if i & 1 != 0 { clip.maxs.x } else { clip.mins.x },
+            if i & 2 != 0 { clip.maxs.y } else { clip.mins.y },
+            if i & 4 != 0 { clip.maxs.z } else { clip.mins.z },
+        );
+        let (a, b) = (corner.dot(u), corner.dot(v));
+        lo = (lo.0.min(a), lo.1.min(b));
+        hi = (hi.0.max(a), hi.1.max(b));
+    }
+    let at = |a: Real, b: Real| u * a + v * b;
+    (
+        vec![
+            at(lo.0, lo.1),
+            at(hi.0, lo.1),
+            at(hi.0, hi.1),
+            at(lo.0, hi.1),
+        ],
+        vec![[0, 1, 2], [0, 2, 3]],
+    )
+}
+
 fn triangle_soup(triangles: Vec<Triangle>) -> (Vec<Vector>, Vec<[u32; 3]>) {
     let indices = (0..triangles.len() as u32)
         .map(|i| [i * 3, i * 3 + 1, i * 3 + 2])
@@ -177,6 +208,9 @@ fn shape_to_trimesh(
                 .map(|i| tri_mesh.triangle(i))
                 .collect(),
         ),
+        TypedShape::HalfSpace(half_space) if let Some(aabb) = &local_clip => {
+            half_space_quad(half_space.normal, aabb)
+        }
         // Simple cases
         TypedShape::Cuboid(cuboid) => cuboid.to_trimesh(),
         TypedShape::Voxels(voxels) => voxels.to_trimesh(),
@@ -221,7 +255,7 @@ fn shape_to_trimesh(
         // Not supported
         TypedShape::Segment(_segment) => return None,
         TypedShape::Polyline(_polyline) => return None,
-        TypedShape::HalfSpace(_half_space) => return None,
+        TypedShape::HalfSpace(_) => return None,
         TypedShape::Custom(_shape) => return None,
     };
     let indices_len = indices.len();
@@ -274,5 +308,27 @@ mod tests {
             .unwrap();
         assert_eq!(trimesh.vertices.len(), 8);
         assert_eq!(trimesh.indices.len(), 12);
+    }
+
+    #[test]
+    fn clipped_half_space_is_its_plane_facing_out() {
+        let clip = Aabb3d::new(Vec3::new(1.0, 2.0, 0.0), Vec3::new(5.0, 4.0, 3.0));
+        let collider = Collider::half_space(Vec3::Y);
+        let trimesh = collider
+            .to_trimesh_clipped(Position::default(), Rotation::default(), 1, Some(&clip), 1)
+            .unwrap();
+        assert_eq!(trimesh.indices.len(), 2);
+        for i in &trimesh.indices {
+            let [a, b, c] = [0, 1, 2].map(|k| trimesh.vertices[i[k] as usize]);
+            assert!((b - a).cross(c - a).normalize().y > 0.99);
+        }
+        for v in &trimesh.vertices {
+            assert!(v.y.abs() < 1e-5 && (-4.0..=6.0).contains(&v.x) && v.z.abs() <= 3.0);
+        }
+        assert!(
+            Collider::half_space(Vec3::Y)
+                .to_trimesh(Position::default(), Rotation::default(), 1)
+                .is_none()
+        );
     }
 }
