@@ -39,6 +39,10 @@ impl Heightfield {
         flag_merge_threshold: u16,
     ) -> Result<(), RasterizationError> {
         let aabb = triangle.aabb();
+        // A non-finite vertex breaks the clipper's side tests (and overruns its buffers).
+        if !aabb.min.is_finite() || !aabb.max.is_finite() {
+            return Ok(());
+        }
         // If the triangle does not touch the bounding box of the heightfield, skip the triangle.
         if !self.aabb.intersects(&aabb) {
             return Ok(());
